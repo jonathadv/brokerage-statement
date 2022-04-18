@@ -2,6 +2,7 @@ from decimal import Decimal
 from enum import Enum
 
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class OperationType(str, Enum):
@@ -29,5 +30,7 @@ class FinancialSummary(BaseModel):
 
 
 class BrokerageStatement(BaseModel):
+    statement_date: datetime
     items: list[StatementItem] = []
     financial_summary: FinancialSummary
+    net_price: Decimal
