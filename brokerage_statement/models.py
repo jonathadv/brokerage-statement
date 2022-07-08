@@ -29,8 +29,14 @@ class FinancialSummary(BaseModel):
     tax_over_service: Decimal
 
 
+class BusinessSummary(BaseModel):
+    # Valor das Operações
+    operations_total_amount: Decimal
+
+
 class BrokerageStatement(BaseModel):
     statement_date: datetime
     items: list[StatementItem] = []
     financial_summary: FinancialSummary
+    business_summary: BusinessSummary
     net_price: Decimal

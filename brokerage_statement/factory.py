@@ -7,19 +7,24 @@ from brokerage_statement.models import (
     BrokerageStatement,
     StatementItem,
     OperationType,
-    FinancialSummary,
+    FinancialSummary, BusinessSummary,
 )
 
 
 def brokerage_statement_factory(
     pdf_statement: BrokerageStatementPdf,
 ) -> BrokerageStatement:
-    return BrokerageStatement(
+    brokerage_statement = BrokerageStatement(
         statement_date=_parse_statement_date(pdf_statement),
         items=_build_statement_items(pdf_statement),
+        business_summary=_build_business_summary(pdf_statement),
         financial_summary=_build_financial_summary(pdf_statement),
         net_price=_parse_net_price(pdf_statement),
     )
+
+
+    assert brokerage_statement.business_summary.operations_total_amount == sum(map(lambda x: x.total_price, brokerage_statement.items)), "operations_total_amount != sum(items.total_price)"
+    return brokerage_statement
 
 
 def _parse_statement_date(pdf_statement: BrokerageStatementPdf) -> datetime:
@@ -52,6 +57,10 @@ def _build_financial_summary(pdf_statement: BrokerageStatementPdf) -> FinancialS
     )
 
 
+def _build_business_summary(pdf_statement: BrokerageStatementPdf) -> BusinessSummary:
+    return BusinessSummary(operations_total_amount=_parse_decimal(pdf_statement.business_summary.operations_total_amount.parsed_content[0]))
+
+
 def _build_statement_items(pdf_statement: BrokerageStatementPdf) -> list[StatementItem]:
     statement_items: list[StatementItem] = []
 
@@ -69,7 +78,7 @@ def _build_statement_items(pdf_statement: BrokerageStatementPdf) -> list[Stateme
         item = StatementItem(
             operation_type=_parse_operation_type(operation_type.strip()),
             security=security_name.split()[0].strip(),
-            amount=amount.strip(),
+            amount=amount.strip().replace(".", ""),
             unit_price=_parse_decimal(price),
             total_price=_parse_decimal(operation_amount),
         )

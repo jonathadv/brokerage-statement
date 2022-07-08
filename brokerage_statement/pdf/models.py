@@ -1,3 +1,5 @@
+import re
+
 from brokerage_statement.pdf.utils import PDFDocument, TextBox, TextAlign
 from itertools import zip_longest
 
@@ -27,6 +29,27 @@ class FinancialSummary(TextBox):
         description = self.description.parsed_content
         amount = self.amount.parsed_content
         return tuple(zip_longest(description, amount, fillvalue=""))
+
+
+class OperationsTotalAmount(TextBox):
+    title = "Valor das Operações"
+    text_align = TextAlign.TO_THE_RIGHT
+    width_scale = 3.0
+
+    @property
+    def parsed_content(self) -> list[str]:
+        if match := re.search("[0-9,.]+", self.content):
+            return [match[0]]
+        return self.content.split("\n")
+
+
+class BusinessSummary(TextBox):
+    title = "Debêntures"
+    width_scale = 12.5
+    height_scale = 20.0
+    text_align = TextAlign.CENTER
+
+    operations_total_amount: OperationsTotalAmount = OperationsTotalAmount()
 
 
 class SecurityName(TextBox):
@@ -85,6 +108,7 @@ class BrokerageStatementPdf(PDFDocument):
     operation_amount: OperationAmount = OperationAmount()
     operation_type: OperationType = OperationType()
 
+    business_summary: BusinessSummary = BusinessSummary()
     financial_summary: FinancialSummary = FinancialSummary()
 
     @property

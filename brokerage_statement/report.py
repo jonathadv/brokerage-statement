@@ -1,6 +1,6 @@
 from brokerage_statement.models import BrokerageStatement
 
-SEPARATOR = "-" * 150
+SEPARATOR = "-" * 170
 BOLD = "\u001b[1m"
 CLEAN = "\u001b[0m"
 
@@ -10,12 +10,12 @@ def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]
     settlement_fee = brokerage_statement.financial_summary.settlement_fee
     exchange_fees = brokerage_statement.financial_summary.exchange_fees
     tax_over_service = brokerage_statement.financial_summary.tax_over_service
-    net_price = brokerage_statement.net_price
+    operations_total_amount = brokerage_statement.business_summary.operations_total_amount
 
     report_rows: list[list[str]] = []
 
     for item in brokerage_statement.items:
-        percent = item.total_price / net_price
+        percent = item.total_price / operations_total_amount
         sec_settlement_fee = settlement_fee * percent
         sec_exchange_fees = exchange_fees * percent
         sec_tax_over_service = tax_over_service * percent
@@ -40,6 +40,7 @@ def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]
                 sec_exchange_fees,
                 sec_tax_over_service,
                 total_with_fees,
+                item.operation_type
             ]
         )
 
@@ -68,7 +69,8 @@ def _draw_report_item_line(report_item: list[str]) -> str:
         f"R${report_item[5]:.2f}\t\t\t\t\t"
         f"R${report_item[6]:.2f}\t\t\t"
         f"R${report_item[7]:.2f}\t\t"
-        f"R${report_item[8]:.2f}\t\t"
+        f"R${report_item[8]:.2f}\t\t\t\t"
+        f"{report_item[9].upper()}\t\t"
     )
 
 
@@ -94,7 +96,8 @@ def calculate_brokerage_statement(brokerage_statement: BrokerageStatement):
         "TAXA DE LIQUIDAÇÃO\t\t"
         "EMOLUMENTOS\t\t"
         "ISS\t\t\t"
-        "TOTAL + TAXAS"
+        "TOTAL + TAXAS\t\t\t"
+        "OPERAÇÃO\t\t\t"
         f"{CLEAN}"
     )
 
