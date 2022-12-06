@@ -11,7 +11,9 @@ def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]
     settlement_fee = brokerage_statement.financial_summary.settlement_fee
     exchange_fees = brokerage_statement.financial_summary.exchange_fees
     tax_over_service = brokerage_statement.financial_summary.tax_over_service
-    operations_total_amount = brokerage_statement.business_summary.operations_total_amount
+    operations_total_amount = (
+        brokerage_statement.business_summary.operations_total_amount
+    )
 
     report_rows: list[list[str]] = []
 
@@ -41,7 +43,7 @@ def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]
                 sec_exchange_fees,
                 sec_tax_over_service,
                 total_with_fees,
-                item.operation_type
+                item.operation_type,
             ]
         )
 
@@ -71,9 +73,8 @@ def _draw_report_item_line(report_item: list[str]) -> str:
         report_item[6],
         report_item[7],
         report_item[8],
-        report_item[9]
+        report_item[9],
     ).replace(".", ",")
-
 
 
 def calculate_brokerage_statement(brokerage_statement: BrokerageStatement):
@@ -89,18 +90,21 @@ def calculate_brokerage_statement(brokerage_statement: BrokerageStatement):
     )
 
     output.append(
-     BOLD + TABLE_HEADER_TEMPLATE.replace(".2f", "").format(
-        "PERCENTAGE",
-        "ATIVO",
-        "QUANTIDADE",
-        "PREÇO UNITÁRIO",
-        "VALOR TOTAL",
-        "TAXA DE LIQUIDAÇÃO",
-        "EMOLUMENTOS",
-        "ISS",
-        "TOTAL + TAXAS",
-        "OPERAÇÃO",
-    ) + CLEAN)
+        BOLD
+        + TABLE_HEADER_TEMPLATE.replace(".2f", "").format(
+            "PERCENTAGE",
+            "ATIVO",
+            "QUANTIDADE",
+            "PREÇO UNITÁRIO",
+            "VALOR TOTAL",
+            "TAXA DE LIQUIDAÇÃO",
+            "EMOLUMENTOS",
+            "ISS",
+            "TOTAL + TAXAS",
+            "OPERAÇÃO",
+        )
+        + CLEAN
+    )
 
     for report_item in report_items:
         output.append(_draw_report_item_line(report_item))

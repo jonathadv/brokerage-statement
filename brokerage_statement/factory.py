@@ -7,7 +7,8 @@ from brokerage_statement.models import (
     BrokerageStatement,
     StatementItem,
     OperationType,
-    FinancialSummary, BusinessSummary,
+    FinancialSummary,
+    BusinessSummary,
 )
 
 
@@ -22,8 +23,9 @@ def brokerage_statement_factory(
         net_price=_parse_net_price(pdf_statement),
     )
 
-
-    assert brokerage_statement.business_summary.operations_total_amount == sum(map(lambda x: x.total_price, brokerage_statement.items)), "operations_total_amount != sum(items.total_price)"
+    assert brokerage_statement.business_summary.operations_total_amount == sum(
+        map(lambda x: x.total_price, brokerage_statement.items)
+    ), "operations_total_amount != sum(items.total_price)"
     return brokerage_statement
 
 
@@ -58,7 +60,11 @@ def _build_financial_summary(pdf_statement: BrokerageStatementPdf) -> FinancialS
 
 
 def _build_business_summary(pdf_statement: BrokerageStatementPdf) -> BusinessSummary:
-    return BusinessSummary(operations_total_amount=_parse_decimal(pdf_statement.business_summary.operations_total_amount.parsed_content[0]))
+    return BusinessSummary(
+        operations_total_amount=_parse_decimal(
+            pdf_statement.business_summary.operations_total_amount.parsed_content[0]
+        )
+    )
 
 
 def _build_statement_items(pdf_statement: BrokerageStatementPdf) -> list[StatementItem]:

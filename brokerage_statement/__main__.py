@@ -7,6 +7,7 @@ from brokerage_statement.report.console import calculate_brokerage_statement
 # FIXME:  Fix multiple buys and sells (2022.02.04.pdf)
 # FIXME:  Fix rule for ISS and Taxa de Corretagem (2022.12.05.pdf)
 
+
 @click.command()
 @click.argument("pdf_path", nargs=1, type=str, required=True)
 def main(pdf_path: str):
