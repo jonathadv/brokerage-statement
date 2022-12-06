@@ -3,6 +3,7 @@ from brokerage_statement.models import BrokerageStatement
 SEPARATOR = "-" * 170
 BOLD = "\u001b[1m"
 CLEAN = "\u001b[0m"
+TABLE_HEADER_TEMPLATE = "{: >15.2f} {: >10} {: >15} {: >15} {: >15} {: >20.2f} {: >15.2f} {: >8.2f} {: >17.2f} {: >10}"
 
 
 def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]]:
@@ -60,18 +61,19 @@ def _calculate_report(brokerage_statement: BrokerageStatement) -> list[list[str]
 
 
 def _draw_report_item_line(report_item: list[str]) -> str:
-    return (
-        f"{report_item[0] * 100:.2f}%\t\t\t"
-        f"{report_item[1]}\t\t\t"
-        f"{report_item[2]}\t\t\t\t"
-        f"R${report_item[3]}\t\t\t\t"
-        f"R${report_item[4]}\t\t"
-        f"R${report_item[5]:.2f}\t\t\t\t\t"
-        f"R${report_item[6]:.2f}\t\t\t"
-        f"R${report_item[7]:.2f}\t\t"
-        f"R${report_item[8]:.2f}\t\t\t\t"
-        f"{report_item[9].upper()}\t\t"
-    )
+    return TABLE_HEADER_TEMPLATE.format(
+        report_item[0] * 100,
+        report_item[1],
+        report_item[2],
+        report_item[3],
+        report_item[4],
+        report_item[5],
+        report_item[6],
+        report_item[7],
+        report_item[8],
+        report_item[9]
+    ).replace(".", ",")
+
 
 
 def calculate_brokerage_statement(brokerage_statement: BrokerageStatement):
@@ -87,19 +89,18 @@ def calculate_brokerage_statement(brokerage_statement: BrokerageStatement):
     )
 
     output.append(
-        f"{BOLD}"
-        "PERCENTAGE\t\t"
-        "SECURITY\t\t"
-        "QUANTIDADE\t\t"
-        "PREÇO UNITÁRIO\t\t"
-        "VALOR TOTAL\t\t"
-        "TAXA DE LIQUIDAÇÃO\t\t"
-        "EMOLUMENTOS\t\t"
-        "ISS\t\t\t"
-        "TOTAL + TAXAS\t\t\t"
-        "OPERAÇÃO\t\t\t"
-        f"{CLEAN}"
-    )
+     BOLD + TABLE_HEADER_TEMPLATE.replace(".2f", "").format(
+        "PERCENTAGE",
+        "ATIVO",
+        "QUANTIDADE",
+        "PREÇO UNITÁRIO",
+        "VALOR TOTAL",
+        "TAXA DE LIQUIDAÇÃO",
+        "EMOLUMENTOS",
+        "ISS",
+        "TOTAL + TAXAS",
+        "OPERAÇÃO",
+    ) + CLEAN)
 
     for report_item in report_items:
         output.append(_draw_report_item_line(report_item))
