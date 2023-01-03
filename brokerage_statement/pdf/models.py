@@ -46,7 +46,7 @@ class OperationsTotalAmount(TextBox):
 class BusinessSummary(TextBox):
     title = "Debêntures"
     width_scale = 12.5
-    height_scale = 20.0
+    height_scale = 35.0
     text_align = TextAlign.CENTER
 
     operations_total_amount: OperationsTotalAmount = OperationsTotalAmount()
@@ -56,7 +56,7 @@ class SecurityName(TextBox):
     title = "Especificação do Título"
     text_align = TextAlign.LEFT
     width_scale = 1.0
-    height_scale = 20.0
+    height_scale = 35.0
     increase_left = 8.0
 
 
@@ -64,7 +64,7 @@ class SecurityAmount(TextBox):
     title = "Quantidade"
     text_align = TextAlign.RIGHT
     width_scale = 1.2
-    height_scale = 20.0
+    height_scale = 35.0
     increase_right = 1.0
 
 
@@ -72,7 +72,7 @@ class SecurityPrice(TextBox):
     title = "Preço Liquidação (R$)"
     text_align = TextAlign.RIGHT
     width_scale = 1.0
-    height_scale = 20.0
+    height_scale = 35.0
     increase_right = 1.0
 
 
@@ -80,7 +80,7 @@ class OperationAmount(TextBox):
     title = "Compra/Venda (R$)"
     text_align = TextAlign.RIGHT
     width_scale = 1.0
-    height_scale = 20.0
+    height_scale = 35.0
     increase_right = 1.0
 
 
@@ -88,7 +88,7 @@ class OperationType(TextBox):
     title = "C/V"
     text_align = TextAlign.CENTER
     width_scale = 1.0
-    height_scale = 20.0
+    height_scale = 35.0
 
 
 class StatementDate(TextBox):

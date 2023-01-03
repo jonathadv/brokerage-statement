@@ -27,6 +27,8 @@ class FinancialSummary(BaseModel):
     exchange_fees: Decimal
     # Imposto sobre Serviço (ISS)
     tax_over_service: Decimal
+    # Corretagem
+    brokerage_fee: Decimal
 
 
 class BusinessSummary(BaseModel):
@@ -40,3 +42,9 @@ class BrokerageStatement(BaseModel):
     financial_summary: FinancialSummary
     business_summary: BusinessSummary
     net_price: Decimal
+
+    def sold_items(self):
+        return [i for i in self.items if i.operation_type == OperationType.SELL]
+
+    def bought_items(self):
+        return [i for i in self.items if i.operation_type == OperationType.BUY]

@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def open_pdf():
     def inner(filename: str):
